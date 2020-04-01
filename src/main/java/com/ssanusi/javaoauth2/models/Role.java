@@ -32,6 +32,10 @@ public class Role extends Auditable {
     public Role() {
     }
 
+    public Role(String name) {
+        this.name = name.toUpperCase();
+    }
+
     public long getRoleid() {
         return roleid;
     }
