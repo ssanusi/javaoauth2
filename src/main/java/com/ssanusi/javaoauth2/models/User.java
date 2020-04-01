@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "User", description = "Yes, this is an actual user")
+//@ApiModel(value = "User", description = "Yes, this is an actual user")
 @Entity
 @Table(name = "users")
 public class User extends Auditable {

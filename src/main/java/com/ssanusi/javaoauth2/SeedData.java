@@ -46,7 +46,7 @@ public class SeedData implements CommandLineRunner {
         admins.add(new UserRoles(new User(),
                 r3));
         User u1 = new User("admin",
-                "password",
+                "secret",
                 "admin@ssanusi.local",
                 admins);
         u1.getUseremails()

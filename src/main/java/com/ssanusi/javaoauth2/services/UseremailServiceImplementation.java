@@ -1,13 +1,17 @@
 package com.ssanusi.javaoauth2.services;
 
 import com.ssanusi.javaoauth2.exceptions.ResourceNotFoundException;
+import com.ssanusi.javaoauth2.logging.Loggable;
 import com.ssanusi.javaoauth2.models.Useremail;
 import com.ssanusi.javaoauth2.repository.UseremailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Loggable
+@Service(value = "useremailService")
 public class UseremailServiceImplementation implements UseremailService {
 
     @Autowired
