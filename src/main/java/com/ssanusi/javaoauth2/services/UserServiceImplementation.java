@@ -11,6 +11,9 @@ import com.ssanusi.javaoauth2.repository.RoleRepository;
 import com.ssanusi.javaoauth2.repository.UserRepository;
 import com.ssanusi.javaoauth2.view.UserNameCountEmails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,7 @@ import java.util.List;
 
 @Loggable
 @Service(value = "userService")
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation implements UserDetailsService, UserService {
 
     @Autowired
     UserAuditing userAuditing;
@@ -57,6 +60,7 @@ public class UserServiceImplementation implements UserService {
         return user;
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
        userRepo.findById(id).orElseThrow(() -> new  ResourceNotFoundException("User id " + id + " not found"));
@@ -146,5 +150,14 @@ public class UserServiceImplementation implements UserService {
     @Override
     public List<UserNameCountEmails> getCountUserEmails() {
         return userRepo.geCountUserEmails();
+    }
+
+    @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepo.findByUsername(username);
+        if(user == null)
+            throw new UsernameNotFoundException("Invalid username or password");
+        return new org.springframework.security.core.userdetails.User(user.getUsername().toLowerCase(),user.getPassword(),user.getAuthority());
     }
 }

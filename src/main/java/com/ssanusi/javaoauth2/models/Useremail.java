@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 
 @Entity
-//@ApiModel(value = "useremails", description = "A list of secondary email for user")
 @Table(name = "useremail", uniqueConstraints = { @UniqueConstraint(columnNames = {"userid", "useremail"})})
 public class Useremail extends Auditable {
 

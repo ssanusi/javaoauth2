@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,6 +35,7 @@ public class UserController {
         logger.trace(request.getMethod().toUpperCase() + " " + request.getRequestURI() + " accessed");
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "", produces = {"application/json"})
     public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
 
@@ -43,6 +46,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/{userId}", produces = {"application/json"})
     public ResponseEntity<?> getuserByid(HttpServletRequest request, @PathVariable long userId) {
 
@@ -51,6 +55,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/name/like/{username}", produces = {"application/json"})
     public ResponseEntity<?> getNameLike(HttpServletRequest request, @PathVariable String username) {
 
@@ -58,6 +63,7 @@ public class UserController {
         List<User> userList = userService.findByNameContaining(username);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
+
 
     @GetMapping(value = "/user/name/{usrname}", produces = {"application/json"})
     public ResponseEntity<?> getUserByName(HttpServletRequest request, @PathVariable String username){
@@ -67,6 +73,24 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getuserinfo", produces = {"application/json"})
+    public ResponseEntity<?> getCurrentUserInfo(HttpServletRequest request, Authentication authorization){
+
+        logRequest(request);
+        User user = userService.findByName(authorization.getName());
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getusername", produces = {"application/json"})
+    public ResponseEntity<?> getCurrentUserName(HttpServletRequest request, Authentication authorization){
+
+        logRequest(request);
+        return new ResponseEntity<>(authorization.getPrincipal(), HttpStatus.OK);
+    }
+
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "", consumes = {"application/json"})
     public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid @RequestBody User newUser){
         logRequest(request);
@@ -80,6 +104,7 @@ public class UserController {
         return new ResponseEntity<>(null, responseHeader, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "/{userId}/role/{roleId}")
     public ResponseEntity<?> addUserRoleById(HttpServletRequest request, @PathVariable long userId, @PathVariable long roleId){
         logRequest(request);
@@ -96,7 +121,7 @@ public class UserController {
 
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/{userId}/role/{roleId}")
     public ResponseEntity<?> deleteUserById(HttpServletRequest request, @PathVariable long userId, @PathVariable long roleId){
         logRequest(request);
@@ -109,8 +134,5 @@ public class UserController {
         logRequest(request);
         return new ResponseEntity<>(userService.getCountUserEmails(), HttpStatus.OK);
     }
-
-
-
 
 }

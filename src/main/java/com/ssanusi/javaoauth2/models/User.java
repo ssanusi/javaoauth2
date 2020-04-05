@@ -3,8 +3,6 @@ package com.ssanusi.javaoauth2.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -14,17 +12,14 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-//@ApiModel(value = "User", description = "Yes, this is an actual user")
 @Entity
 @Table(name = "users")
 public class User extends Auditable {
 
-    @ApiModelProperty(name = "user id", value = "primary key for user", required = true, example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userid;
 
-    @ApiModelProperty(name = "username", value = "Actual username to sign on", required = true, example = "sansforyou")
     @Size(min = 2, max = 30, message = "User name must be between 3 to 30 character")
     @Column(nullable = false, unique = true)
     private String username;
