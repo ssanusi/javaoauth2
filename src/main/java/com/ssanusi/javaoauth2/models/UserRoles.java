@@ -51,8 +51,8 @@ public class UserRoles extends Auditable implements Serializable {
         if (this == o) return true;
         if (!(o instanceof UserRoles)) return false;
         UserRoles userRoles = (UserRoles) o;
-        return getUser().equals(userRoles.getUser()) &&
-                getRole().equals(userRoles.getRole());
+        return Objects.equals(getUser(),userRoles.getUser()) &&
+                Objects.equals(getRole(),userRoles.getRole());
     }
 
     @Override

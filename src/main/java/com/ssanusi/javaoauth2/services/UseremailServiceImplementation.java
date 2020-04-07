@@ -5,6 +5,8 @@ import com.ssanusi.javaoauth2.logging.Loggable;
 import com.ssanusi.javaoauth2.models.Useremail;
 import com.ssanusi.javaoauth2.repository.UseremailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class UseremailServiceImplementation implements UseremailService {
 
     @Autowired
     private UseremailRepository useremailRepo;
+    private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 
     @Override
@@ -31,26 +34,40 @@ public class UseremailServiceImplementation implements UseremailService {
     }
 
     @Override
-    public List<Useremail> findByUserName(String username) {
-        return useremailRepo.findAllByUser_Username(username.toLowerCase());
+    public List<Useremail> findByUserName(String username, boolean isAdmin) {
+        if(username.equalsIgnoreCase(authentication.getName().toLowerCase()) || isAdmin)
+            return useremailRepo.findAllByUser_Username(username.toLowerCase());
+        else
+            throw new ResourceNotFoundException(authentication.getName() + " not Authorized to make change");
+
     }
 
     @Override
-    public void delete(long id) {
-        if(useremailRepo.findById(id).isPresent())
-            useremailRepo.deleteById(id);
+    public void delete(long id, boolean isAdmin) {
+        if(useremailRepo.findById(id).isPresent()){
+            if(useremailRepo.findById(id).get().getUser().getUsername().equalsIgnoreCase(authentication.getName()) || isAdmin)
+                useremailRepo.deleteById(id);
+            else
+                throw new ResourceNotFoundException(authentication.getName() + " not Authorized to make change");
+        }
 
         else
             throw new ResourceNotFoundException("Useremail with id " + id + " Not Found!");
     }
 
+
     @Override
-    public Useremail update(long useremailid, String emailaddress) {
-        if(useremailRepo.findById(useremailid).isPresent()){
-            Useremail useremail = findUseremailById(useremailid);
-            useremail.setUseremail(emailaddress.toLowerCase());
-            return useremailRepo.save(useremail);
-        }else {
+    public Useremail update(long useremailid, String emailaddress, boolean isAdmin) {
+        if (useremailRepo.findById(useremailid).isPresent()) {
+            if (useremailRepo.findById(useremailid).get().getUser().getUsername().equalsIgnoreCase(authentication.getName()) || isAdmin) {
+
+                Useremail useremail = findUseremailById(useremailid);
+                useremail.setUseremail(emailaddress.toLowerCase());
+                return useremailRepo.save(useremail);
+            } else {
+                throw new ResourceNotFoundException(authentication.getName() + " not authorized to make changes");
+            }
+        } else {
             throw new ResourceNotFoundException("Useremail with id " + useremailid + " Not Found!");
         }
     }

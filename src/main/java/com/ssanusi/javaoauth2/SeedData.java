@@ -3,6 +3,7 @@ package com.ssanusi.javaoauth2;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
+import com.ssanusi.javaoauth2.logging.Loggable;
 import com.ssanusi.javaoauth2.models.Role;
 import com.ssanusi.javaoauth2.models.User;
 import com.ssanusi.javaoauth2.models.UserRoles;
@@ -19,23 +20,25 @@ import java.util.Locale;
 
 @Transactional
 @Component
-public class SeedData implements CommandLineRunner {
-
+public class SeedData implements CommandLineRunner
+{
     @Autowired
     RoleService roleService;
 
     @Autowired
     UserService userService;
 
+
     @Override
-    public void run(String[] args) throws Exception {
+    public void run(String[] args) throws Exception
+    {
         Role r1 = new Role("admin");
         Role r2 = new Role("user");
         Role r3 = new Role("data");
 
-        r1 = roleService.save(r1);
-        r2 = roleService.save(r2);
-        r3 = roleService.save(r3);
+        roleService.save(r1);
+        roleService.save(r2);
+        roleService.save(r3);
 
         // admin, data, user
         ArrayList<UserRoles> admins = new ArrayList<>();
@@ -136,10 +139,7 @@ public class SeedData implements CommandLineRunner {
                     .add(new Useremail(fakeUser,
                             fakeValuesService.bothify("????##@gmail.com")));
             userService.save(fakeUser);
-
+            System.out.println("********************SEED DATA**************************");
         }
-
-        System.out.println("\n********************* SEED DATA ***********************");
     }
-
 }

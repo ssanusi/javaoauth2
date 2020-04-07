@@ -75,7 +75,6 @@ public class UserController {
 
     @GetMapping(value = "/getuserinfo", produces = {"application/json"})
     public ResponseEntity<?> getCurrentUserInfo(HttpServletRequest request, Authentication authorization){
-
         logRequest(request);
         User user = userService.findByName(authorization.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -87,8 +86,6 @@ public class UserController {
         logRequest(request);
         return new ResponseEntity<>(authorization.getPrincipal(), HttpStatus.OK);
     }
-
-
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "", consumes = {"application/json"})
@@ -116,9 +113,8 @@ public class UserController {
     public ResponseEntity<?> updateUser(HttpServletRequest request, @Valid @RequestBody User updateUser, @PathVariable long userId){
 
         logRequest(request);
-        userService.update(updateUser,userId);
+        userService.update(updateUser,userId, request.isUserInRole("ADMIN"));
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -127,12 +123,6 @@ public class UserController {
         logRequest(request);
         userService.deleteUserRole(userId, roleId);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/email/count", produces = {"application/json"})
-    public ResponseEntity<?> getNumberUserEmails(HttpServletRequest request){
-        logRequest(request);
-        return new ResponseEntity<>(userService.getCountUserEmails(), HttpStatus.OK);
     }
 
 }

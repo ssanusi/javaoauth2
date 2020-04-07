@@ -2,12 +2,13 @@ package com.ssanusi.javaoauth2.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
+import com.ssanusi.javaoauth2.logging.Loggable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Loggable
 @Entity
 @Table(name = "roles")
 public class Role extends Auditable {

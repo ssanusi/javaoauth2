@@ -15,7 +15,7 @@ public class Useremail extends Auditable {
     private long useremailid;
 
     @Column(nullable = false)
-    @Email(message = "Email must be a valid format username@domain.com")
+    @Email
     private String useremail;
 
     @ManyToOne
@@ -43,7 +43,7 @@ public class Useremail extends Auditable {
         if(useremail == null)
             return null;
         else
-            return useremail;
+            return useremail.toLowerCase();
     }
 
     public void setUseremail(String useremail) {
@@ -56,5 +56,14 @@ public class Useremail extends Auditable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Useremail{" +
+                "useremailid=" + useremailid +
+                ", useremail='" + useremail + '\'' +
+                ", user=" + user.getUsername() +
+                '}';
     }
 }

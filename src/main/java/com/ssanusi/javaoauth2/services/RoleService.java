@@ -8,6 +8,8 @@ public interface RoleService {
 
     List<Role> findAll();
 
+    Role findRoleById(long id);
+
     void delete(long id);
 
     Role save(Role role);
@@ -15,7 +17,5 @@ public interface RoleService {
     Role findByName(String name);
 
     Role update(long id, Role role);
-
-    Role findRoleById(long id);
 
 }

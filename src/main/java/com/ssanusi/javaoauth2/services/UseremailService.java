@@ -10,9 +10,9 @@ public interface UseremailService {
 
     Useremail findUseremailById(long id);
 
-    List<Useremail> findByUserName(String username);
+    List<Useremail> findByUserName(String username, boolean isAdmin);
 
-    void delete(long id);
+    void delete(long id, boolean isAdmin);
 
-    Useremail update(long useremailid, String emailaddress);
+    Useremail update(long useremailid, String emailaddress, boolean isAdmin);
 }

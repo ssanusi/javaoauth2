@@ -23,10 +23,6 @@ public class RoleServiceImplementation implements RoleService {
     @Autowired
     UserRepository userrepo;
 
-    @Autowired
-    UserAuditing userAuditing;
-
-
     @Override
     public List<Role> findAll() {
         List<Role> roleList = new ArrayList<>();
@@ -34,22 +30,9 @@ public class RoleServiceImplementation implements RoleService {
         return roleList;
     }
 
-    @Transactional
     @Override
-    public void delete(long id) {
-        rolerepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not Found"));
-        rolerepo.deleteById(id);
-    }
-
-    @Override
-    public Role save(Role role) {
-        Role newRole  = new Role();
-        newRole.setName(role.getName());
-
-        if(role.getUserRolesList().size() > 0)
-            throw new ResourceFoundException("User Roles are not updated through Role. See endpoint POST: users/user/{userid}/role/{roleid}");
-
-        return rolerepo.save(role);
+    public Role findRoleById(long id) {
+        return rolerepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not found!"));
     }
 
     @Override
@@ -61,6 +44,28 @@ public class RoleServiceImplementation implements RoleService {
             throw new ResourceNotFoundException(name);
     }
 
+
+    @Transactional
+    @Override
+    public void delete(long id) {
+        rolerepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not Found"));
+        rolerepo.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public Role save(Role role) {
+        Role newRole  = new Role();
+        newRole.setName(role.getName());
+
+        if(role.getUserRolesList().size() > 0)
+            throw new ResourceFoundException("User Roles are not updated through Role. See endpoint POST: users/user/{userid}/role/{roleid}");
+
+        return rolerepo.save(role);
+    }
+
+
+    @Transactional
     @Override
     public Role update(long id, Role role) {
         if(role.getName() == null)
@@ -71,13 +76,9 @@ public class RoleServiceImplementation implements RoleService {
 
         Role newRole = findRoleById(id);
 
-        rolerepo.updateRoleName(userAuditing.getCurrentAuditor().get(), id, role.getName());
+        rolerepo.updateRoleName(id, role.getName());
 
         return findRoleById(id);
     }
 
-    @Override
-    public Role findRoleById(long id) {
-        return rolerepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role id " + id + " not found!"));
-    }
 }

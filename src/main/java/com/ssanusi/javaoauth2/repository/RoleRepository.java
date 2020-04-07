@@ -16,21 +16,22 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM UserRoles WHERE userid = :userid and roleid :roleid", nativeQuery = true)
+    @Query(value = "DELETE FROM UserRoles WHERE userid = :userid AND roleid = :roleid")
     void deleteUserRoles(long userid, long roleid);
 
     @Transactional
     @Modifying
-    @Query(value = "INSERT INTO userroles(userid, roleid, created_by, created_date, last_modified_by, last_modified_date) VALUES(:userid, :roleid, :uname, CURRENT_TIMESTAMP, :uname, CURRENT_TIMESTAMP)", nativeQuery = true)
-    void insertUserRoles(String uname, long userid, long roleid);
+    @Query(value = "INSERT INTO UserRoles(userid, roleid) VALUES (:userid, :roleid)",
+            nativeQuery = true)
+    void insertUserRoles(long userid, long roleid);
 
 
     Role findByNameIgnoreCase(String name);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE roles SET name = :name, last_modified_by = :uname, last_modified_date = CURRENT_TIMESTAMP WHERE roleid = :roleid", nativeQuery = true)
-    void updateRoleName(String uname, long roleid, String name);
+    @Query(value = "UPDATE Role SET name = :name WHERE roleid = :roleid")
+    void updateRoleName(long roleid, String name);
 
 
 }

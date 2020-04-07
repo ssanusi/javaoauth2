@@ -13,6 +13,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findByUsernameContainingIgnoreCase(String name);
 
-    @Query(value = "SELECT u.username as usernamerpt, count(ue.useremailid) as countemails FROM users u JOIN useremails ue ON u.userid = ue.userid GROUP BY u.username", nativeQuery = true)
-    List<UserNameCountEmails> geCountUserEmails();
 }

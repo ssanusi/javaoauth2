@@ -3,6 +3,7 @@ package com.ssanusi.javaoauth2.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ssanusi.javaoauth2.logging.Loggable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+@Loggable
 @Entity
 @Table(name = "users")
 public class User extends Auditable {
@@ -20,7 +22,6 @@ public class User extends Auditable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userid;
 
-    @Size(min = 2, max = 30, message = "User name must be between 3 to 30 character")
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -30,7 +31,7 @@ public class User extends Auditable {
 
 
     @Column(nullable = false)
-    @Email(message = "primaryemail Should be a valid email format username@domain.com")
+    @Email
     private String primaryemail;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -64,11 +65,14 @@ public class User extends Auditable {
     }
 
     public String getUsername() {
-        return username;
+        if(username == null)
+            return null;
+        else
+            return username.toLowerCase();
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.toLowerCase();
     }
 
     public String getPassword() {
@@ -78,6 +82,11 @@ public class User extends Auditable {
     public void setPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void setPasswordNoEncrypt(String password)
+    {
+        this.password = password;
     }
 
     public String getPrimaryemail() {
@@ -120,5 +129,15 @@ public class User extends Auditable {
         return rtnList;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "userid=" + userid +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", primaryemail='" + primaryemail + '\'' +
+                ", userroles=" + userroles +
+                ", useremails=" + useremails +
+                '}';
+    }
 }
